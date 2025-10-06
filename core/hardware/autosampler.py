@@ -111,7 +111,7 @@ class AutoSampler:
         t0 = time.time()
 
         last_print_time = 0
-        print_interval = 5   
+        print_interval = 10   
         check_interval = 1  
 
         while collected_volume < self.vial_volume and collected_volume < volume:

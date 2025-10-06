@@ -143,7 +143,13 @@ class ExperimentRunner:
         
         if self.simulation_mode in ["off", "hybrid"]:
             print("inside the if statement")
-            print("SELF",self.use_autosampler)
+            #if reference run is needed run reference to autosampler
+            if self.opc.read_value("Hitec_OPC_DA20_Server-%3EDIAZOAN%3AAUTOSAMPLER.T_STAT") != 2:
+                self.opc.write_value("Hitec_OPC_DA20_Server-%3EDIAZOAN%3AAUTOSAMPLER.REF_T", 1)
+            # set valve to waste
+            self.opc.write_value("Hitec_OPC_DA20_Server-%3EDIAZOAN%3AV_02_CLOSE", 1)
+            self.opc.write_value("Hitec_OPC_DA20_Server-%3EDIAZOAN%3AV_02_OPEN", 1)
+            print(f"Autosampler: {self.use_autosampler} | Volume to collect: {self.volume_to_collect} ml")
             self.opc.write_value("Hitec_OPC_DA20_Server-%3EDIAZOAN%3ACHILLER_01.ON", 1)
             self.opc.write_value("Hitec_OPC_DA20_Server-%3EDIAZOAN%3ACHILLER_01.W1", target_temp)
             self.opc.write_value("Hitec_OPC_DA20_Server-%3EDIAZOAN%3APUMP_4", 0.2) # Organic
