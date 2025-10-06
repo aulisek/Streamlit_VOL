@@ -124,10 +124,9 @@ class ExperimentRunner:
         """
         # Total flow in mL/min
         total_flow = reactor_volume / (residence_time / 60)
-
         # Calculate flow components
         flow_aq = total_flow / (1 + ratio_org_aq)
-        flow_org = total_flow - flow_aq
+        self.flow_org = total_flow - flow_aq
         flow_react1 = flow_aq / 2
         flow_react2 = flow_aq / 2
 
@@ -352,7 +351,7 @@ class ExperimentRunner:
         if self.use_autosampler:
             self.autosampler.clean_before_collect(self.tray_pos_waste)
             self.autosampler.move_prepare_needle(self.tray_pos_collect)
-            self.autosampler.start_collection(flow_rate=1.4, volume=self.volume_to_collect)  # Collect desired volume
+            self.autosampler.start_collection(flow_rate=self.flow_org, volume=self.volume_to_collect)  # Collect desired volume
             self.tray_pos_waste += 2
             self.tray_pos_collect += 2
         else:

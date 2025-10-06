@@ -37,10 +37,10 @@ st.session_state.use_autosampler = use_autosampler
 
 volume_to_collect = st.sidebar.number_input(
     "Desired volume (ml):",
-    min_value=0,
-    max_value=6,
-    value=3,
-    step=1
+    min_value=0.0,
+    max_value=6.0,
+    value=3.0,
+    step=0.5
 )
 
  
