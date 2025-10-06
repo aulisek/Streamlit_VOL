@@ -35,6 +35,15 @@ opc_url = st.sidebar.text_input("🔌 OPC Server URL", value="http://em-nun:5708
 use_autosampler = st.sidebar.checkbox("Use Autosampler", value=True)
 st.session_state.use_autosampler = use_autosampler
 
+volume_to_collect = st.sidebar.number_input(
+    "Desired volume (ml):",
+    min_value=0,
+    max_value=6,
+    value=3,
+    step=1
+)
+
+ 
 # --- Always initialize session state keys ---
 if "simulation_mode" not in st.session_state:
     st.session_state.simulation_mode = simulation_mode
@@ -79,7 +88,8 @@ if resume_file != "None" and st.sidebar.button("Load Previous Run"):
         st.session_state.opc_client,
         "multi_objective_log.csv",
         simulation_mode=st.session_state.simulation_mode,
-        use_autosampler=st.session_state.use_autosampler
+        use_autosampler=st.session_state.use_autosampler,
+        volume_to_collect=volume_to_collect
     )
 
     st.success(f"Loaded run: {resume_file}")
@@ -93,13 +103,22 @@ experiment_notes = st.text_area("Additional Notes")
 # --- Define Variables ---
 st.subheader("⚙️ Optimization Variables")
 
+VARIABLE_OPTIONS = {
+    "Temperature": "temperature",
+    "Pressure": "pressure",
+    "Ratio oraganic/aqueous": "ratio_org_aq",
+    "Acid": "acid",
+    "Residence Time": "residence_time"
+}
+
 if "variables" not in st.session_state:
     st.session_state.variables = []
 
 with st.form(key="variable_form"):
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        var_name = st.text_input("Variable Name")
+        display_name = st.selectbox("Variable Name", list(VARIABLE_OPTIONS.keys()))
+        var_name = VARIABLE_OPTIONS[display_name]  # Use internal variable name
     with col2:
         lower_bound = st.number_input("Lower Bound", value=0.0, format="%.4f")
     with col3:

@@ -72,13 +72,22 @@ experiment_notes = st.text_area("Additional Notes")
 # --- Define Variables ---
 st.subheader("⚙️ Optimization Variables")
 
+VARIABLE_OPTIONS = {
+    "Temperature": "temperature",
+    "Pressure": "pressure",
+    "Ratio oraganic/aqueous": "ratio_org_aq",
+    "Acid": "acid",
+    "Residence Time": "residence_time"
+}
+
 if "variables" not in st.session_state:
     st.session_state.variables = []
 
 with st.form(key="variable_form"):
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        var_name = st.text_input("Variable Name")
+        display_name = st.selectbox("Variable Name", list(VARIABLE_OPTIONS.keys()))
+        var_name = VARIABLE_OPTIONS[display_name]  # Use internal variable name
     with col2:
         lower_bound = st.number_input("Lower Bound", value=0.0, format="%.4f")
     with col3:
