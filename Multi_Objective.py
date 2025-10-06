@@ -182,7 +182,7 @@ if st.button("Start Optimization"):
         st.session_state.simulation_mode = simulation_mode
         st.session_state.opc_url = opc_url
         st.session_state.opc_client = OPCClient(st.session_state.opc_url)
-        st.session_state.runner = ExperimentRunner(st.session_state.opc_client, "multi_objective_log.csv", simulation_mode=st.session_state.simulation_mode)
+        st.session_state.runner = ExperimentRunner(st.session_state.opc_client, "multi_objective_log.csv", simulation_mode=st.session_state.simulation_mode, use_autosampler=st.session_state.use_autosampler, volume_to_collect=volume_to_collect)
         search_space = [(low, high) for _, low, high, _ in st.session_state.variables]
         n_objectives = len(objectives)
         st.session_state.objectives = objectives  # <-- Always update objectives in session state

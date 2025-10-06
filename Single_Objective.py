@@ -38,6 +38,14 @@ st.session_state.opc_url = opc_url
 use_autosampler = st.sidebar.checkbox("Use Autosampler", value=True)
 st.session_state.use_autosampler = use_autosampler
 
+volume_to_collect = st.sidebar.number_input(
+    "Desired volume (ml):",
+    min_value=0,
+    max_value=6,
+    value=3,
+    step=1
+)
+
 if simulation_mode != "off":
     st.warning("⚠️ Simulation Mode is ON — OPC hardware interaction is partially or fully disabled.")
     
@@ -58,7 +66,7 @@ if resume_file != "None" and st.sidebar.button("Load Previous Run"):
     st.session_state.variables = metadata["variables"]
     st.session_state.response_to_optimize = metadata["response"]
     st.session_state.total_iterations = metadata["total_iterations"]
-    st.session_state.runner = ExperimentRunner(OPCClient(metadata["opc_url"]), "experiment_log.csv", simulation_mode=metadata["simulation_mode"],use_autosampler=st.session_state.use_autosampler)
+    st.session_state.runner = ExperimentRunner(OPCClient(metadata["opc_url"]), "experiment_log.csv", simulation_mode=metadata["simulation_mode"],use_autosampler=st.session_state.use_autosampler, volume_to_collect=volume_to_collect)
     st.session_state.optimization_running = True
     st.session_state.run_name = resume_file
 
@@ -139,7 +147,7 @@ if col_start.button("▶ Start Optimization"):
     st.session_state.optimizer = StepBayesianOptimizer(opt_vars)
     st.session_state.experiment_data = []
     st.session_state.iteration = 0
-    st.session_state.runner = ExperimentRunner(OPCClient(opc_url), "experiment_log.csv", simulation_mode=simulation_mode, use_autosampler=st.session_state.use_autosampler)
+    st.session_state.runner = ExperimentRunner(OPCClient(opc_url), "experiment_log.csv", simulation_mode=simulation_mode, use_autosampler=st.session_state.use_autosampler, volume_to_collect=volume_to_collect)
     st.session_state.optimization_running = True
 
 if col_stop.button("🛑 Stop Optimization"):
