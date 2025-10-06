@@ -12,7 +12,7 @@ import numpy as np
 
 
 class ExperimentRunner:
-    def __init__(self, opc_client: OPCClient, csv_filename: str, simulation_mode: str = "off", use_autosampler: bool = False):
+    def __init__(self, opc_client: OPCClient, csv_filename: str, simulation_mode: str = "off", use_autosampler: bool = False, volume_to_collect: float = 3.0):
         self.opc = opc_client
         self.use_autosampler = use_autosampler
         self.autosampler = AutoSampler(opc_client, vial_volume_ml=2.0) if use_autosampler else None
@@ -26,6 +26,7 @@ class ExperimentRunner:
         self.full_measurement_log = []  # Store all measurements for the full experiment
         self.tray_pos_waste = 0
         self.tray_pos_collect = 1
+        self.volume_to_collect = volume_to_collect  # Volume to collect in mL
 
     def initialize_experiment(self, experiment_number, iterations, parameters):
         self.start_time = time.time()
@@ -345,7 +346,7 @@ class ExperimentRunner:
         if self.use_autosampler:
             self.autosampler.clean_before_collect(self.tray_pos_waste)
             self.autosampler.move_prepare_needle(self.tray_pos_collect)
-            self.autosampler.start_collection(flow_rate=1.4, volume=2.0)
+            self.autosampler.start_collection(flow_rate=1.4, volume=self.volume_to_collect)  # Collect desired volume
             self.tray_pos_waste += 2
             self.tray_pos_collect += 2
         else:
