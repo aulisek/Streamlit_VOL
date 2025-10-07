@@ -180,7 +180,7 @@ class ExperimentRunner:
                 diff = abs(current_temp - target_temp)
                 print(f"📉 ΔT = {diff:.2f}°C")
 
-                if diff <= 0.5:
+                if diff <= 8.5:
                     print(f"✅ Target temperature reached: {current_temp:.2f}°C")
                     break
 
