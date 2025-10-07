@@ -82,6 +82,16 @@ class ExperimentRunner:
         except Exception as e:
             print(f"❌ Failed to check water area or perform cleaning: {e}")
 
+    def calculate_flows(self, residence_time, ratio_org_aq=1.0, reactor_volume=1.4):
+        total_flow = reactor_volume / (residence_time / 60)
+        flow_aq = total_flow / (1 + ratio_org_aq)
+        flow_org = total_flow - flow_aq
+        flow_aq = round(flow_aq, 3)
+        flow_org = round(flow_org, 3)
+        total_flow = round(total_flow, 3)
+        return [flow_aq, flow_org, total_flow]
+
+
     def calculate_pump_flows(self, acid, total_acid):
         yes_acid = (acid / 0.6) * total_acid
         no_acid = total_acid - yes_acid
@@ -351,7 +361,8 @@ class ExperimentRunner:
         if self.use_autosampler:
             self.autosampler.clean_before_collect(self.tray_pos_waste)
             self.autosampler.move_prepare_needle(self.tray_pos_collect)
-            self.autosampler.start_collection(flow_rate=self.flow_org, volume=self.volume_to_collect)  # Collect desired volume
+            flow_org = self.calculate_flows(parameters["residence_time"], parameters.get("ratio_org_aq", 1.0))[1]
+            self.autosampler.start_collection(flow_rate=flow_org, volume=self.volume_to_collect)  # Collect desired volume
             self.tray_pos_waste += 2
             self.tray_pos_collect += 2
         else:
