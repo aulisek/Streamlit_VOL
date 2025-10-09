@@ -32,7 +32,7 @@ class AutoSampler:
 
     def needle_down(self):    
         """Lower the needle and wait until done."""
-        self.opc.write_value("Hitec_OPC_DA20_Server->DIAZOAN:AUTOSAMPLER.POS_N", 3000)
+        self.opc.write_value("Hitec_OPC_DA20_Server->DIAZOAN:AUTOSAMPLER.POS_N", 1861)
         needle_stat = self.opc.read_value("Hitec_OPC_DA20_Server->DIAZOAN:AUTOSAMPLER.N_STAT")
 
         last_print_time = 0
@@ -112,7 +112,7 @@ class AutoSampler:
 
         last_print_time = 0
         print_interval = 10   
-        check_interval = 1  
+        check_interval = 0.005 
 
         while collected_volume < self.vial_volume and collected_volume < volume:
             elapsed_min = (time.time() - t0) / 60
@@ -125,7 +125,7 @@ class AutoSampler:
 
             time.sleep(check_interval)
 
-        print("🧪 Vial is full or desired volume reached")
+        print(f"🧪 Vial is full or desired volume reached, collected: {collected_volume:.2f} ml")
         self.set_valve_waste()
         self.needle_up()
         print("=== Sample collection finished ===")

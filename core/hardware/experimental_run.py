@@ -136,7 +136,7 @@ class ExperimentRunner:
         total_flow = reactor_volume / (residence_time / 60)
         # Calculate flow components
         flow_aq = total_flow / (1 + ratio_org_aq)
-        self.flow_org = total_flow - flow_aq
+        flow_org = total_flow - flow_aq
         flow_react1 = flow_aq / 2
         flow_react2 = flow_aq / 2
 
@@ -315,9 +315,10 @@ class ExperimentRunner:
             })
 
         # Calculate flow values
-        total_flow = reactor_volume / (res_time / 60)
-        flow_aq = total_flow / 2
-        flow_org = total_flow - flow_aq
+        flow_aq, flow_org, total_flow = self.calculate_flows(parameters["residence_time"], parameters.get("ratio_org_aq", 1.0))
+        #total_flow = reactor_volume / (res_time / 60)
+        #flow_aq = total_flow / 2
+        #flow_org = total_flow - flow_aq
 
         simulated_result = simulate_objectives(raw_area, flow_aq, flow_org, res_time, selected_objectives=objectives, directions=directions)
 
@@ -347,12 +348,13 @@ class ExperimentRunner:
 
         else:
             mean_measurement = self.collect_measurements(parameters = parameters)
-            reactor_volume = 1.4
+            flow_aq, flow_org, total_flow = self.calculate_flows(parameters["residence_time"], parameters.get("ratio_org_aq", 1.0))
+            #reactor_volume = 1.4
             res_time = parameters.get("residence_time", 20)
             #ratio = parameters.get("ratio_org_aq", 1.0)
-            total_flow = reactor_volume /(res_time/60)
-            flow_aq = total_flow / 2
-            flow_org = total_flow - flow_aq
+            #total_flow = reactor_volume /(res_time/60)
+            #flow_aq = total_flow / 2
+            #flow_org = total_flow - flow_aq
             # collect sample into vial placed in autosampler
             result = simulate_objectives(
                 mean_measurement, flow_aq, flow_org, res_time, selected_objectives=objectives, directions=directions
